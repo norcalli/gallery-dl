@@ -33,8 +33,17 @@ class MetadataPP(PostProcessor):
             ext = "json"
 
         self.extension = options.get("extension", ext)
+        self.run_always =  options.get("always", False)
+
+    def prepare(self, pathfmt):
+        if self.run_always:
+            self._run(pathfmt)
 
     def run(self, pathfmt):
+        if not self.run_always:
+            self._run(pathfmt)
+
+    def _run(self, pathfmt):
         path = "{}.{}".format(pathfmt.realpath, self.extension)
         with open(path, "w", encoding="utf-8") as file:
             self.write(file, pathfmt)
