@@ -26,6 +26,7 @@ class PixivExtractor(Extractor):
         self.api = PixivAppAPI(self)
         self.user_id = -1
         self.load_ugoira = self.config("ugoira", True)
+        self.load_bookmark_details = self.config("bookmark_details", False)
 
     def items(self):
         metadata = self.get_metadata()
@@ -46,6 +47,10 @@ class PixivExtractor(Extractor):
 
             yield Message.Directory, work
 
+            if self.load_bookmark_details and work["is_bookmarked"]:
+                bookmark_detail = self.api.illust_bookmark_detail(work["id"])
+                work["user_tags"] = [tag["name"] for tag in bookmark_detail["tags"] if tag["is_registered"] and tag["name"] not in work["tags"]]
+
             if work["type"] == "ugoira":
                 if not self.load_ugoira:
                     continue
@@ -63,6 +68,7 @@ class PixivExtractor(Extractor):
                 yield Message.Url, url, work
 
             else:
+                work["page_count"] = len(meta_pages)
                 for num, img in enumerate(meta_pages):
                     url = img["image_urls"]["original"]
                     work["num"] = "_p{:02}".format(num)
@@ -456,6 +462,10 @@ class PixivAppAPI():
     def illust_detail(self, illust_id):
         params = {"illust_id": illust_id}
         return self._call("v1/illust/detail", params)["illust"]
+
+    def illust_bookmark_detail(self, illust_id):
+        params = {"illust_id": illust_id}
+        return self._call("v2/illust/bookmark/detail", params)["bookmark_detail"]
 
     def illust_follow(self, restrict="all"):
         params = {"restrict": restrict}
