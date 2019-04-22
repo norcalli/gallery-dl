@@ -52,6 +52,7 @@ Kirei Cake           https://reader.kireicake.com/       Chapters, Manga
 KissManga            https://kissmanga.com/              Chapters, Manga
 Komikcast            https://komikcast.com/              Chapters, Manga
 Konachan             https://konachan.com/               Pools, Popular Images, Posts, Tag-Searches
+livedoor Blog        http://blog.livedoor.jp/            Blogs, Posts
 Luscious             https://luscious.net/               Albums, Search Results                             Optional
 Manga Fox            https://fanfox.net/                 Chapters
 Manga Here           https://www.mangahere.cc/           Chapters, Manga
@@ -60,6 +61,7 @@ MangaDex             https://mangadex.org/               Chapters, Manga
 Mangapanda           https://www.mangapanda.com/         Chapters, Manga
 MangaPark            https://mangapark.me/               Chapters, Manga
 Mangareader          https://www.mangareader.net/        Chapters, Manga
+Mangoxo              https://www.mangoxo.com/            Albums, Channels                                   Optional
 Newgrounds           https://www.newgrounds.com/         Images from Users, individual Images, Videos
 Ngomik               http://ngomik.in/                   Chapters
 nhentai              https://nhentai.net/                Galleries, Search Results
@@ -67,10 +69,12 @@ Niconico Seiga       https://seiga.nicovideo.jp/         Images from Users, indi
 nijie                https://nijie.info/                 |nijie-C|                                          Required
 Nyafuu Archive       https://archive.nyafuu.org/         Threads
 Pawoo                https://pawoo.net/                  Images from Users, Images from Statuses
-Photobucket          http://photobucket.com/             Albums, individual Images
+Photobucket          https://photobucket.com/            Albums, individual Images
 Piczel               https://piczel.tv/                  Images from Users, Folders, individual Images
 Pinterest            https://www.pinterest.com/          Boards, Pins, pin.it Links, related Pins
 Pixiv                https://www.pixiv.net/              |pixiv-C|                                          Required
+Pixnet               https://www.pixnet.net/             |pixnet-C|
+Plurk                https://www.plurk.com/              Posts, Timelines
 Pornreactor          http://pornreactor.cc/              |pornreactor-C|
 PowerManga           https://read.powermanga.org/        Chapters, Manga
 Pururin              https://pururin.io/                 Galleries
@@ -89,7 +93,7 @@ SmugMug              https://www.smugmug.com/            |smugmug-C|            
 The /b/ Archive      https://thebarchive.com/            Threads
 Tsumino              https://www.tsumino.com/            Galleries, Search Results                          Optional
 Tumblr               https://www.tumblr.com/             Images from Users, Likes, Posts, Tag-Searches      Optional (OAuth)
-Twitter              https://twitter.com/                Media Timelines, Timelines, Tweets
+Twitter              https://twitter.com/                Media Timelines, Timelines, Tweets                 Optional
 Wallhaven            https://alpha.wallhaven.cc/         individual Images, Search Results                  Optional
 Warosu               https://warosu.org/                 Threads
 Weibo                https://www.weibo.com/              Images from Users, Images from Statuses
@@ -97,6 +101,7 @@ WikiArt.org          https://www.wikiart.org/            Artists, Artworks
 World Three          http://www.slide.world-three.org/   Chapters, Manga
 XVideos              https://www.xvideos.com/            Images from Users, Galleries
 Yandere              https://yande.re/                   Pools, Popular Images, Posts, Tag-Searches
+yaplog!              https://yaplog.jp/                  Blogs, Posts
 |yuki-S|             https://yuki.la/                    Threads
 Acidimg              https://acidimg.cc/                 individual Images
 Imagetwist           https://imagetwist.com/             individual Images
@@ -115,6 +120,7 @@ Turboimagehost       https://www.turboimagehost.com/     individual Images
 .. |joyreactor-C| replace:: Images from Users, Posts, Search Results, Tag-Searches
 .. |nijie-C| replace:: Images from Users, Doujin, Favorites, individual Images
 .. |pixiv-C| replace:: Images from Users, Favorites, Follows, pixiv.me Links, Rankings, Search Results, Individual Images
+.. |pixnet-C| replace:: Images from Users, Folders, individual Images, Sets
 .. |pornreactor-C| replace:: Images from Users, Posts, Search Results, Tag-Searches
 .. |smugmug-C| replace:: Albums, individual Images, Images from Users and Folders
 .. |yuki-S| replace:: yuki.la 4chan archive

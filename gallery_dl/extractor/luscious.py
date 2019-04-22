@@ -62,12 +62,12 @@ class LusciousAlbumExtractor(LusciousBase, GalleryExtractor):
     test = (
         ("https://luscious.net/albums/okinami-no-koigokoro_277031/", {
             "url": "7e4984a271a1072ac6483e4228a045895aff86f3",
-            "keyword": "b5cc69b36689e7360876dd1f8ef2395782eb493f",
+            "keyword": "f9c34e1a5b0c1f119e9f644c99933ecf7d7dbfd2",
             "content": "b3a747a6464509440bd0ff6d1267e6959f8d6ff3",
         }),
         ("https://luscious.net/albums/virgin-killer-sweater_282582/", {
             "url": "21cc68a7548f4d71dfd67d8caf96349dde7e791c",
-            "keyword": "f8e5e7b32a7ff777cae5a89e93d06eb51afe3f48",
+            "keyword": "c147d8ef90843f68e37ed15e4fe017e62fc97c96",
         }),
         ("https://luscious.net/albums/not-found_277035/", {
             "exception": exception.NotFoundError,

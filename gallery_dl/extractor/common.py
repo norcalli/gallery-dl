@@ -8,7 +8,6 @@
 
 """Common classes and constants used by extractor modules."""
 
-import os
 import re
 import time
 import netrc
@@ -127,10 +126,17 @@ class Extractor():
 
     def _init_headers(self):
         """Set additional headers for the 'session' object"""
-        self.session.headers["Accept-Language"] = "en-US,en;q=0.5"
-        self.session.headers["User-Agent"] = self.config(
+        headers = self.session.headers
+        headers.clear()
+
+        headers["User-Agent"] = self.config(
             "user-agent", ("Mozilla/5.0 (X11; Linux x86_64; rv:62.0) "
                            "Gecko/20100101 Firefox/62.0"))
+        headers["Accept"] = "*/*"
+        headers["Accept-Language"] = "en-US,en;q=0.5"
+        headers["Accept-Encoding"] = "gzip, deflate"
+        headers["Connection"] = "keep-alive"
+        headers["Upgrade-Insecure-Requests"] = "1"
 
     def _init_proxies(self):
         """Update the session's proxy map"""
@@ -394,21 +400,5 @@ def generate_extractors(extractor_data, symtable, classes):
 
 # Reduce strictness of the expected magic string in cookiejar files.
 # (This allows the use of Wget-generated cookiejars without modification)
-
 http.cookiejar.MozillaCookieJar.magic_re = re.compile(
     "#( Netscape)? HTTP Cookie File", re.IGNORECASE)
-
-
-# The first import of requests happens inside this file.
-# If we are running on Windows and the from requests expected certificate file
-# is missing (which happens in a standalone executable from py2exe), the
-# 'verify' option is globally set to False to avoid an exception being thrown
-# when attempting to access https:// URLs.
-
-if os.name == "nt":
-    import os.path
-    import requests.certs
-    import requests.packages.urllib3 as ulib3
-    if not os.path.isfile(requests.certs.where()):
-        config.set(("verify",), False)
-        ulib3.disable_warnings(ulib3.exceptions.InsecureRequestWarning)

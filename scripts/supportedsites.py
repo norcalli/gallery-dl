@@ -1,12 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""Generate a reStructuredText document with all supported sites"""
 
 import sys
-import os.path
 import collections
 
-ROOTDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.realpath(ROOTDIR))
-from gallery_dl import extractor  # noqa
+import util
+from gallery_dl import extractor
 
 
 CATEGORY_MAP = {
@@ -40,6 +41,7 @@ CATEGORY_MAP = {
     "jaiminisbox"    : "Jaimini's Box",
     "kireicake"      : "Kirei Cake",
     "kissmanga"      : "KissManga",
+    "livedoor"       : "livedoor Blog",
     "mangadex"       : "MangaDex",
     "mangafox"       : "Manga Fox",
     "mangahere"      : "Manga Here",
@@ -66,6 +68,7 @@ CATEGORY_MAP = {
     "wikiart"        : "WikiArt.org",
     "worldthree"     : "World Three",
     "xvideos"        : "XVideos",
+    "yaplog"         : "yaplog!",
     "yuki"           : "yuki.la 4chan archive",
 }
 
@@ -100,6 +103,7 @@ AUTH_MAP = {
     "flickr"     : "Optional (OAuth)",
     "idolcomplex": "Optional",
     "luscious"   : "Optional",
+    "mangoxo"    : "Optional",
     "nijie"      : "Required",
     "pixiv"      : "Required",
     "reddit"     : "Optional (OAuth)",
@@ -108,6 +112,7 @@ AUTH_MAP = {
     "smugmug"    : "Optional (OAuth)",
     "tsumino"    : "Optional",
     "tumblr"     : "Optional (OAuth)",
+    "twitter"    : "Optional",
     "wallhaven"  : "Optional",
 }
 
@@ -250,5 +255,5 @@ def write_output(fobj, columns, extractors):
 
 
 outfile = sys.argv[1] if len(sys.argv) > 1 else "supportedsites.rst"
-with open(os.path.join(ROOTDIR, "docs", outfile), "w") as file:
+with open(util.path("docs", outfile), "w") as file:
     write_output(file, COLUMNS, build_extractor_list())

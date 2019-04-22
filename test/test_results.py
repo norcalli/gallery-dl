@@ -20,13 +20,11 @@ from gallery_dl import extractor, job, config, exception
 TRAVIS_SKIP = {
     "exhentai", "kissmanga", "mangafox", "dynastyscans", "nijie", "bobx",
     "archivedmoe", "archiveofsins", "thebarchive", "fireden", "4plebs",
-    "sankaku", "idolcomplex", "mangahere", "readcomiconline",
+    "sankaku", "idolcomplex", "mangahere", "readcomiconline", "mangadex",
 }
 
 # temporary issues, etc.
 BROKEN = {
-    "komikcast",
-    "mangahere",
     "mangapark",
 }
 
@@ -229,6 +227,8 @@ def setup_test_config():
     config.set(("extractor", "nijie", "username"), email)
     config.set(("extractor", "seiga", "username"), email)
     config.set(("extractor", "danbooru", "username"), None)
+    config.set(("extractor", "twitter" , "username"), None)
+    config.set(("extractor", "mangoxo" , "password"), "VZ8DL3983u")
 
     config.set(("extractor", "deviantart", "client-id"), "7777")
     config.set(("extractor", "deviantart", "client-secret"),
