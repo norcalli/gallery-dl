@@ -119,8 +119,13 @@ class TestExtractorResults(unittest.TestCase):
                 self._test_kwdict(value, test)
             elif isinstance(test, type):
                 self.assertIsInstance(value, test, msg=key)
-            elif isinstance(test, str) and test.startswith("re:"):
-                self.assertRegex(value, test[3:], msg=key)
+            elif isinstance(test, str):
+                if test.startswith("re:"):
+                    self.assertRegex(value, test[3:], msg=key)
+                elif test.startswith("type:"):
+                    self.assertEqual(type(value).__name__, test[5:], msg=key)
+                else:
+                    self.assertEqual(value, test, msg=key)
             else:
                 self.assertEqual(value, test, msg=key)
 
@@ -147,7 +152,7 @@ class ResultJob(job.DownloadJob):
         for msg in self.extractor:
             self.dispatch(msg)
 
-    def handle_url(self, url, keywords):
+    def handle_url(self, url, keywords, fallback=None):
         self.update_url(url)
         self.update_keyword(keywords)
         self.update_archive(keywords)

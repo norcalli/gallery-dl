@@ -1,9 +1,23 @@
 # Changelog
 
-## Unreleased
+## 1.8.3 - 2019-05-04
 ### Additions
 - Support for
-  - `plurk` - https://www.plurk.com/ (#212)
+  - `plurk`  - https://www.plurk.com/ ([#212](https://github.com/mikf/gallery-dl/issues/212))
+  - `sexcom` - https://www.sex.com/   ([#147](https://github.com/mikf/gallery-dl/issues/147))
+- `--clear-cache`
+- `date` metadata fields for `deviantart`, `twitter`, and `tumblr` ([#224](https://github.com/mikf/gallery-dl/issues/224), [#232](https://github.com/mikf/gallery-dl/issues/232))
+### Changes
+- Standalone executables are now built using PyInstaller:
+  - uses the latest CPython interpreter (Python 3.7.3)
+  - available on several platforms (Windows, Linux, macOS)
+  - includes the `certifi` CA bundle, `youtube-dl`, and `pyOpenSSL` on Windows
+### Fixes
+- Patch `urllib3`'s  default list of SSL/TLS ciphers to prevent Cloudflare CAPTCHAs ([#227](https://github.com/mikf/gallery-dl/issues/227))
+  (Windows users need to install `pyOpenSSL` for this to take effect)
+- Provide fallback URLs for `twitter` images ([#237](https://github.com/mikf/gallery-dl/issues/237))
+- Send `Referer` headers when downloading from `hitomi` ([#239](https://github.com/mikf/gallery-dl/issues/239))
+- Updated login procedure on `mangoxo`
 
 ## 1.8.2 - 2019-04-12
 ### Additions
@@ -25,7 +39,7 @@
 ### Additions
 - Support for:
   - `35photo` - https://35photo.pro/ ([#162](https://github.com/mikf/gallery-dl/issues/162))
-  - `500px` - https://500px.com/ ([#185](https://github.com/mikf/gallery-dl/issues/185))
+  - `500px`   - https://500px.com/   ([#185](https://github.com/mikf/gallery-dl/issues/185))
 - `instagram` extractor for hashtags ([#202](https://github.com/mikf/gallery-dl/issues/202))
 - Option to get more metadata on `deviantart` ([#189](https://github.com/mikf/gallery-dl/issues/189))
 - Man pages and bash completion ([#150](https://github.com/mikf/gallery-dl/issues/150))
@@ -41,9 +55,9 @@
 ## 1.8.0 - 2019-03-15
 ### Additions
 - Support for:
-  - `weibo` - https://www.weibo.com/
-  - `pururin` - https://pururin.io/ ([#174](https://github.com/mikf/gallery-dl/issues/174))
-  - `fashionnove` - https://www.fashionnova.com ([#175](https://github.com/mikf/gallery-dl/issues/175))
+  - `weibo`       - https://www.weibo.com/
+  - `pururin`     - https://pururin.io/          ([#174](https://github.com/mikf/gallery-dl/issues/174))
+  - `fashionnova` - https://www.fashionnova.com/ ([#175](https://github.com/mikf/gallery-dl/issues/175))
   - `shopify` sites in general ([#175](https://github.com/mikf/gallery-dl/issues/175))
 - Snap packaging ([#169](https://github.com/mikf/gallery-dl/issues/169), [#170](https://github.com/mikf/gallery-dl/issues/170), [#187](https://github.com/mikf/gallery-dl/issues/187), [#188](https://github.com/mikf/gallery-dl/issues/188))
 - Automatic Cloudflare DDoS protection bypass
