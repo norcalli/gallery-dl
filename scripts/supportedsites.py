@@ -57,17 +57,20 @@ CATEGORY_MAP = {
     "rbt"            : "RebeccaBlackTech",
     "rule34"         : "Rule 34",
     "sankaku"        : "Sankaku Channel",
+    "sankakucomplex" : "Sankaku Complex",
     "seaotterscans"  : "Sea Otter Scans",
     "seiga"          : "Niconico Seiga",
     "senmanga"       : "Sen Manga",
     "sensescans"     : "Sense-Scans",
     "sexcom"         : "Sex.com",
     "simplyhentai"   : "Simply Hentai",
+    "slickpic"       : "SlickPic",
     "slideshare"     : "SlideShare",
     "smugmug"        : "SmugMug",
     "thebarchive"    : "The /b/ Archive",
     "wikiart"        : "WikiArt.org",
     "worldthree"     : "World Three",
+    "xhamster"       : "xHamster",
     "xvideos"        : "XVideos",
     "yaplog"         : "yaplog!",
     "yuki"           : "yuki.la 4chan archive",
@@ -114,7 +117,6 @@ AUTH_MAP = {
     "tsumino"    : "Optional",
     "tumblr"     : "Optional (OAuth)",
     "twitter"    : "Optional",
-    "wallhaven"  : "Optional",
 }
 
 IGNORE_LIST = (

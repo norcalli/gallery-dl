@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-"""Extract images from https://chan.sankakucomplex.com/"""
+"""Extractors for https://chan.sankakucomplex.com/"""
 
 from .common import Extractor, Message, SharedConfigMixin
 from .. import text, util, exception
@@ -101,7 +101,7 @@ class SankakuExtractor(SharedConfigMixin, Extractor):
             tags = collections.defaultdict(list)
             tags_html = text.extract(page, '<ul id=tag-sidebar>', '</ul>')[0]
             pattern = re.compile(r'tag-type-([^>]+)><a href="/\?tags=([^"]+)')
-            for tag_type, tag_name in pattern.findall(tags_html):
+            for tag_type, tag_name in pattern.findall(tags_html or ""):
                 tags[tag_type].append(text.unquote(tag_name))
             for key, value in tags.items():
                 data["tags_" + key] = " ".join(value)
@@ -225,6 +225,11 @@ class SankakuTagExtractor(SankakuExtractor):
 
             next_qs = text.extract(page, 'next-page-url="/?', '"', pos)[0]
             next_id = text.parse_query(next_qs).get("next")
+
+            # stop if the same "next" parameter occurs twice in a row (#265)
+            if "next" in params and params["next"] == next_id:
+                return
+
             params["next"] = next_id or (text.parse_int(ids[-1]) - 1)
             params["page"] = "2"
 
@@ -278,7 +283,7 @@ class SankakuPostExtractor(SankakuExtractor):
         "options": (("tags", True),),
         "keyword": {
             "tags_artist": "bonocho",
-            "tags_copyright": "batman_(series) the_dark_knight",
+            "tags_copyright": "batman_(series) batman the_dark_knight",
             "tags_medium": "sketch copyright_name",
             "tags_studio": "dc_comics",
             "tags_character": str,

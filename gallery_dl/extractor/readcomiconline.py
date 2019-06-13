@@ -9,11 +9,12 @@
 """Extract comic-issues and entire comics from https://readcomiconline.to/"""
 
 from .common import ChapterExtractor, MangaExtractor
+from .kissmanga import RedirectMixin
 from .. import text
 import re
 
 
-class ReadcomiconlineBase():
+class ReadcomiconlineBase(RedirectMixin):
     """Base class for readcomiconline extractors"""
     category = "readcomiconline"
     directory_fmt = ("{category}", "{comic}", "{issue:>03}")
@@ -49,7 +50,6 @@ class ReadcomiconlineIssueExtractor(ReadcomiconlineBase, ChapterExtractor):
         }
 
     def images(self, page):
-        self.session.headers["Referer"] = None
         return [
             (url, None)
             for url in text.extract_iter(

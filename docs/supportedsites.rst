@@ -9,6 +9,7 @@ Site                 URL                                 Capabilities           
 4plebs               https://archive.4plebs.org/         Threads
 500px                https://500px.com/                  Images from Users, Galleries, individual Images
 8chan                https://8ch.net/                    Threads
+8muses               https://www.8muses.com/             Albums
 Adobe Portfolio      https://www.myportfolio.com/        Galleries
 arch.b4k.co          https://arch.b4k.co/                Threads
 Archive of Sins      https://archiveofsins.com/          Threads
@@ -36,6 +37,7 @@ Hentai Foundry       https://www.hentai-foundry.com/     |hentaifoundry-C|
 Hentai2Read          https://hentai2read.com/            Chapters, Manga
 HentaiFox            https://hentaifox.com/              Galleries, Search Results
 HentaiHere           https://hentaihere.com/             Chapters, Manga
+Hentainexus          https://hentainexus.com/            Galleries, Search Results
 Hitomi.la            https://hitomi.la/                  Galleries
 Hypnohub             https://hypnohub.net/               Pools, Popular Images, Posts, Tag-Searches
 Idol Complex         https://idol.sankakucomplex.com/    Pools, Posts, Tag-Searches                         Optional
@@ -47,6 +49,7 @@ imgur                https://imgur.com/                  Albums, individual Imag
 Instagram            https://www.instagram.com/          Images from Users, individual Images, Tag-Searches
 Jaimini's Box        https://jaiminisbox.com/reader/     Chapters, Manga
 Joyreactor           http://joyreactor.cc/               |joyreactor-C|
+Keenspot             http://www.keenspot.com/            Comics
 Khinsider            https://downloads.khinsider.com/    Soundtracks
 Kirei Cake           https://reader.kireicake.com/       Chapters, Manga
 KissManga            https://kissmanga.com/              Chapters, Manga
@@ -68,6 +71,7 @@ nhentai              https://nhentai.net/                Galleries, Search Resul
 Niconico Seiga       https://seiga.nicovideo.jp/         Images from Users, individual Images               Required
 nijie                https://nijie.info/                 |nijie-C|                                          Required
 Nyafuu Archive       https://archive.nyafuu.org/         Threads
+Patreon              https://www.patreon.com/            Images from Users, Creators
 Pawoo                https://pawoo.net/                  Images from Users, Images from Statuses
 Photobucket          https://photobucket.com/            Albums, individual Images
 Piczel               https://piczel.tv/                  Images from Users, Folders, individual Images
@@ -75,6 +79,7 @@ Pinterest            https://www.pinterest.com/          Boards, Pins, pin.it Li
 Pixiv                https://www.pixiv.net/              |pixiv-C|                                          Required
 Pixnet               https://www.pixnet.net/             |pixnet-C|
 Plurk                https://www.plurk.com/              Posts, Timelines
+Pornhub              https://www.pornhub.com/            Images from Users, Galleries
 Pornreactor          http://pornreactor.cc/              |pornreactor-C|
 PowerManga           https://read.powermanga.org/        Chapters, Manga
 Pururin              https://pururin.io/                 Galleries
@@ -85,21 +90,24 @@ rule #34             https://rule34.paheal.net/          Posts, Tag-Searches
 Rule 34              https://rule34.xxx/                 Pools, Posts, Tag-Searches
 Safebooru            https://safebooru.org/              Pools, Posts, Tag-Searches
 Sankaku Channel      https://chan.sankakucomplex.com/    Pools, Posts, Tag-Searches                         Optional
+Sankaku Complex      https://www.sankakucomplex.com/     Articles, Tag-Searches
 Sen Manga            https://raw.senmanga.com/           Chapters
 Sense-Scans          http://sensescans.com/reader/       Chapters, Manga
 Sex.com              https://www.sex.com/                Boards, Pins, Search Results
 Simply Hentai        https://www.simply-hentai.com/      Galleries, individual Images, Videos
+SlickPic             https://www.slickpic.com//          Albums
 SlideShare           https://www.slideshare.net/         Presentations
 SmugMug              https://www.smugmug.com/            |smugmug-C|                                        Optional (OAuth)
 The /b/ Archive      https://thebarchive.com/            Threads
 Tsumino              https://www.tsumino.com/            Galleries, Search Results                          Optional
 Tumblr               https://www.tumblr.com/             Images from Users, Likes, Posts, Tag-Searches      Optional (OAuth)
 Twitter              https://twitter.com/                Media Timelines, Timelines, Tweets                 Optional
-Wallhaven            https://alpha.wallhaven.cc/         individual Images, Search Results                  Optional
+Wallhaven            https://wallhaven.cc/               individual Images, Search Results
 Warosu               https://warosu.org/                 Threads
 Weibo                https://www.weibo.com/              Images from Users, Images from Statuses
 WikiArt.org          https://www.wikiart.org/            Artists, Artworks
 World Three          http://www.slide.world-three.org/   Chapters, Manga
+xHamster             https://xhamster.com/               Images from Users, Galleries
 XVideos              https://www.xvideos.com/            Images from Users, Galleries
 Yandere              https://yande.re/                   Pools, Popular Images, Posts, Tag-Searches
 yaplog!              https://yaplog.jp/                  Blogs, Posts

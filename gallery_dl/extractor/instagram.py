@@ -50,7 +50,7 @@ class InstagramExtractor(Extractor):
         media = shared_data['entry_data']['PostPage'][0]['graphql']['shortcode_media']
 
         common = {
-            'comments': text.parse_int(media['edge_media_to_comment']['count']),
+            'date': text.parse_timestamp(media['taken_at_timestamp']),
             'likes': text.parse_int(media['edge_media_preview_like']['count']),
             'owner_id': media['owner']['id'],
             'username': media['owner']['username'],
@@ -120,8 +120,7 @@ class InstagramExtractor(Extractor):
             if 'entry_data' in shared_data:
                 base_shared_data = shared_data['entry_data'][page_type][0]['graphql']
 
-                # `rhx_gis' and variables_id are available only in the first page
-                rhx_gis = shared_data['rhx_gis']
+                # variables_id is available only in the first page
                 variables_id = base_shared_data[psdf['node']][psdf['node_id']]
             else:
                 base_shared_data = shared_data['data']
@@ -143,10 +142,9 @@ class InstagramExtractor(Extractor):
                 variables_id,
                 end_cursor,
             )
-            xigis = '{}:{}'.format(rhx_gis, variables)
             headers = {
                 "X-Requested-With": "XMLHttpRequest",
-                "X-Instagram-GIS": hashlib.md5(xigis.encode()).hexdigest(),
+                "X-Instagram-GIS": hashlib.md5(variables.encode()).hexdigest(),
             }
             url = '{}/graphql/query/?query_hash={}&variables={}'.format(
                 self.root,
@@ -173,7 +171,7 @@ class InstagramImageExtractor(InstagramExtractor):
                        r"/vp/[0-9a-f]+/[0-9A-F]+/t51.2885-15/e35"
                        r"/44877605_725955034447492_3123079845831750529_n.jpg",
             "keyword": {
-                "comments": int,
+                "date": "type:datetime",
                 "height": int,
                 "likes": int,
                 "media_id": "1922949326347663701",
@@ -190,7 +188,6 @@ class InstagramImageExtractor(InstagramExtractor):
             "keyword": {
                 "sidecar_media_id": "1875629777499953996",
                 "sidecar_shortcode": "BoHk1haB5tM",
-                "comments": int,
                 "likes": int,
                 "username": "instagram",
             }
@@ -200,7 +197,7 @@ class InstagramImageExtractor(InstagramExtractor):
         ("https://www.instagram.com/p/Bqxp0VSBgJg/", {
             "url": "8f38c1cf460c9804842f7306c487410f33f82e7e",
             "keyword": {
-                "comments": int,
+                "date": "type:datetime",
                 "height": int,
                 "likes": int,
                 "media_id": "1923502432034620000",

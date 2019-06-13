@@ -395,6 +395,17 @@ Description Try to follow external URLs of embedded players.
 =========== =====
 
 
+extractor.deviantart.extra
+--------------------------
+=========== =====
+Type        ``bool``
+Default     ``false``
+Description Download extra Sta.sh resources from description texts.
+
+            Note: Enabling this option also enables deviantart.metadata_.
+=========== =====
+
+
 extractor.deviantart.flat
 -------------------------
 =========== =====
@@ -408,6 +419,19 @@ Description Select the directory structure created by the Gallery- and
               favorites-collections and transfer any further work to other
               extractors (``folder`` or ``collection``), which will then
               create individual subdirectories for each of them.
+=========== =====
+
+
+extractor.deviantart.folders
+----------------------------
+=========== =====
+Type        ``bool``
+Default     ``false``
+Description Provide a ``folders`` metadata field that contains the names of all
+            folders a deviation is present in.
+
+            Note: Gathering this information requires a lot of API calls.
+            Use with caution.
 =========== =====
 
 
@@ -529,12 +553,12 @@ Description The ``access_token`` and ``access_token_secret`` values you get
 =========== =====
 
 
-extractor.flickr.metadata
--------------------------
+extractor.flickr.videos
+-----------------------
 =========== =====
 Type        ``bool``
-Default     ``false``
-Description Load additional metadata when using the single-image extractor.
+Default     ``true``
+Description Extract and download videos.
 =========== =====
 
 
@@ -593,6 +617,18 @@ Description Controls whether to choose the GIF or MP4 version of an animation.
 =========== =====
 
 
+extractor.kissmanga.captcha
+---------------------------
+=========== =====
+Type        ``string``
+Default     ``"stop"``
+Description Controls how to handle redirects to CAPTCHA pages.
+
+            * ``"stop``: Stop the current extractor run.
+            * ``"wait``: Ask the user to solve the CAPTCHA and wait.
+=========== =====
+
+
 extractor.oauth.browser
 -----------------------
 =========== =====
@@ -643,6 +679,18 @@ Type        ``float``
 Default     ``3.0`` and ``6.0``
 Description Minimum and maximum wait time in seconds between HTTP requests
             during the extraction process.
+=========== =====
+
+
+extractor.readcomiconline.captcha
+---------------------------------
+=========== =====
+Type        ``string``
+Default     ``"stop"``
+Description Controls how to handle redirects to CAPTCHA pages.
+
+            * ``"stop``: Stop the current extractor run.
+            * ``"wait``: Ask the user to solve the CAPTCHA and wait.
 =========== =====
 
 
@@ -844,6 +892,18 @@ extractor.twitter.videos
 Type        ``bool``
 Default     ``false``
 Description Use `youtube-dl`_ to download from video tweets.
+=========== =====
+
+
+extractor.wallhaven.api-key
+---------------------------
+=========== =====
+Type        ``string``
+Default     ``null``
+Description Your  `API Key <https://wallhaven.cc/settings/account>`__ to use
+            your account's browsing settings and default filters when searching.
+
+            See https://wallhaven.cc/help/api for more information.
 =========== =====
 
 
@@ -1537,6 +1597,7 @@ Description An object with the ``name`` of a post-processor and its options.
 .. _skipped: `extractor.*.skip`_
 .. _`date-min and date-max`: `extractor.reddit.date-min & .date-max`_
 .. _date-format: extractor.reddit.date-format_
+.. _deviantart.metadata: extractor.deviantart.metadata_
 
 .. _.netrc:            https://stackoverflow.com/tags/.netrc/info
 .. _tempfile.gettempdir(): https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir

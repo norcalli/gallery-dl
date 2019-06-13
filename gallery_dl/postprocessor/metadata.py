@@ -10,7 +10,6 @@
 
 from .common import PostProcessor
 from .. import util
-import json
 
 
 class MetadataPP(PostProcessor):
@@ -60,23 +59,16 @@ class MetadataPP(PostProcessor):
             return
 
         if not isinstance(tags, list):
-            for separator in (" :: ", ", ", " "):
-                taglist = tags.split(separator)
-                if len(taglist) >= len(tags) / 16:
-                    break
+            taglist = tags.split(", ")
+            if len(taglist) < len(tags) / 16:
+                taglist = tags.split(" ")
             tags = taglist
 
         file.write("\n".join(tags))
         file.write("\n")
 
     def _write_json(self, file, pathfmt):
-        json.dump(
-            pathfmt.keywords,
-            file,
-            sort_keys=True,
-            indent=self.indent,
-            ensure_ascii=self.ascii,
-        )
+        util.dump_json(pathfmt.keywords, file, self.ascii, self.indent)
 
 
 __postprocessor__ = MetadataPP

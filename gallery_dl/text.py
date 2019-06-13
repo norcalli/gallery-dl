@@ -124,6 +124,16 @@ def extract(txt, begin, end, pos=0):
         return None, pos
 
 
+def rextract(txt, begin, end, pos=-1):
+    try:
+        lbeg = len(begin)
+        first = txt.rindex(begin, 0, pos)
+        last = txt.index(end, first + lbeg)
+        return txt[first + lbeg:last], first
+    except (ValueError, TypeError, AttributeError):
+        return None, pos
+
+
 def extract_all(txt, rules, pos=0, values=None):
     """Calls extract for each rule and returns the result in a dict"""
     if values is None:
@@ -221,6 +231,25 @@ def parse_timestamp(ts, default=None):
         return datetime.datetime.utcfromtimestamp(int(ts))
     except (TypeError, ValueError, OverflowError):
         return default
+
+
+def parse_datetime(date_string, format="%Y-%m-%dT%H:%M:%S%z"):
+    """Create a datetime object by parsing 'date_string'"""
+    try:
+        if format.endswith("%z") and date_string[-3] == ":":
+            # workaround for Python < 3.7: +00:00 -> +0000
+            ds = date_string[:-3] + date_string[-2:]
+        else:
+            ds = date_string
+        d = datetime.datetime.strptime(ds, format)
+        o = d.utcoffset()
+        if o is not None:
+            d = d.replace(tzinfo=None) - o  # convert to naive UTC
+        return d
+    except (TypeError, IndexError, KeyError):
+        return None
+    except (ValueError, OverflowError):
+        return date_string
 
 
 if os.name == "nt":

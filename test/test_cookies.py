@@ -17,7 +17,6 @@ from os.path import join
 
 import gallery_dl.config as config
 import gallery_dl.extractor as extractor
-from gallery_dl.extractor.message import Message
 
 CKEY = ("cookies",)
 
@@ -53,9 +52,9 @@ class TestCookiejar(unittest.TestCase):
 
         cookie = next(iter(cookies))
         self.assertEqual(cookie.domain, ".example.org")
-        self.assertEqual(cookie.path, "/")
-        self.assertEqual(cookie.name, "NAME")
-        self.assertEqual(cookie.value, "VALUE")
+        self.assertEqual(cookie.path  , "/")
+        self.assertEqual(cookie.name  , "NAME")
+        self.assertEqual(cookie.value , "VALUE")
 
     def test_invalid_cookiefile(self):
         self._test_warning(self.invalid_cookiefile, http.cookiejar.LoadError)
@@ -93,7 +92,7 @@ class TestCookiedict(unittest.TestCase):
         for category in ["exhentai", "nijie", "sankaku", "seiga"]:
             extr = _get_extractor(category)
             cookies = extr.session.cookies
-            for key in self.cdict.keys():
+            for key in self.cdict:
                 self.assertTrue(key in cookies)
             for c in cookies:
                 self.assertEqual(c.domain, extr.cookiedomain)
@@ -107,9 +106,9 @@ class TestCookieLogin(unittest.TestCase):
     def test_cookie_login(self):
         extr_cookies = {
             "exhentai": ("ipb_member_id", "ipb_pass_hash"),
-            "nijie": ("nemail", "nlogin"),
-            "sankaku": ("login", "pass_hash"),
-            "seiga": ("user_session",),
+            "nijie"   : ("nemail", "nlogin"),
+            "sankaku" : ("login", "pass_hash"),
+            "seiga"   : ("user_session",),
         }
         for category, cookienames in extr_cookies.items():
             cookies = {name: "value" for name in cookienames}
@@ -121,9 +120,10 @@ class TestCookieLogin(unittest.TestCase):
 
 
 def _get_extractor(category):
-    for msg in extractor.find("test:" + category):
-        if msg[0] == Message.Queue:
-            return extractor.find(msg[1])
+    for extr in extractor.extractors():
+        if extr.category == category and hasattr(extr, "_login_impl"):
+            url = next(extr._get_tests())[0]
+            return extr.from_url(url)
 
 
 if __name__ == "__main__":

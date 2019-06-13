@@ -11,10 +11,11 @@
 from .common import Extractor, Message
 from .. import text, exception
 from ..cache import cache, memcache
+import collections
 import itertools
 import mimetypes
-import time
 import math
+import time
 import re
 
 
@@ -37,9 +38,13 @@ class DeviantartExtractor(Extractor):
         self.api = DeviantartAPI(self)
         self.offset = 0
         self.flat = self.config("flat", True)
+        self.extra = self.config("extra", False)
         self.original = self.config("original", True)
         self.user = match.group(1) or match.group(2)
         self.group = False
+
+        if self.extra:
+            self.api.metadata = True
 
         self.commit_journal = {
             "html": self._commit_journal_html,
@@ -68,14 +73,18 @@ class DeviantartExtractor(Extractor):
 
             if "content" in deviation:
                 content = deviation["content"]
-                if self.original and deviation["is_downloadable"]:
+
+                if self.original and deviation["is_downloadable"] and \
+                        text.ext_from_url(content["src"]) != "gif":
                     self._update_content(deviation, content)
+
                 if deviation["index"] <= 790677560 and \
                         content["src"].startswith("https://images-wixmp-"):
                     # https://github.com/r888888888/danbooru/issues/4069
                     content["src"] = re.sub(
                         r"(/f/[^/]+/[^/]+)/v\d+/.*",
                         r"/intermediary\1", content["src"])
+
                 yield self.commit(deviation, content)
 
             if "videos" in deviation:
@@ -89,6 +98,12 @@ class DeviantartExtractor(Extractor):
             if "excerpt" in deviation and self.commit_journal:
                 journal = self.api.deviation_content(deviation["deviationid"])
                 yield self.commit_journal(deviation, journal)
+
+            if self.extra:
+                for match in DeviantartStashExtractor.pattern.finditer(
+                        deviation.get("description", "")):
+                    deviation["_extractor"] = DeviantartStashExtractor
+                    yield Message.Queue, match.group(0), deviation
 
     def deviations(self):
         """Return an iterable containing all relevant Deviation-objects"""
@@ -262,6 +277,17 @@ class DeviantartGalleryExtractor(DeviantartExtractor):
             "pattern": r"https://www.deviantart.com/yakuzafc/gallery/0/",
             "count": ">= 15",
         }),
+        ("https://www.deviantart.com/justatest235723", {
+            "count": 2,
+            "options": (("metadata", 1), ("folders", 1), ("original", 0)),
+            "keyword": {
+                "description": str,
+                "folders": list,
+                "is_watching": bool,
+                "license": str,
+                "tags": list,
+            },
+        }),
         ("https://www.deviantart.com/shimoda8/gallery/", {
             "exception": exception.NotFoundError,
         }),
@@ -339,6 +365,20 @@ class DeviantartDeviationExtractor(DeviantartExtractor):
             "pattern": (r"https://images-wixmp-\w+\.wixmp\.com"
                         r"/intermediary/f/[^/]+/[^.]+\.jpg$")
         }),
+        # non-download URL for GIFs (#242)
+        (("https://www.deviantart.com/skatergators/art/"
+          "COM-Monique-Model-781571783"), {
+            "pattern": (r"https://images-wixmp-\w+\.wixmp\.com"
+                        r"/f/[^/]+/[^.]+\.gif\?token="),
+        }),
+        # external URLs from description (#302)
+        (("https://www.deviantart.com/uotapo/art/"
+          "INANAKI-Memorial-Humane7-590297498"), {
+            "options": (("extra", 1), ("original", 0)),
+            "pattern": r"https?://sta\.sh/\w+$",
+            "range": "2-",
+            "count": 4,
+        }),
         # old-style URLs
         ("https://shimoda7.deviantart.com"
          "/art/For-the-sake-of-a-memory-10073852"),
@@ -346,6 +386,8 @@ class DeviantartDeviationExtractor(DeviantartExtractor):
          "/art/Aime-Moi-part-en-vadrouille-261986576"),
         ("https://zzz.deviantart.com/art/zzz-1234567890"),
     )
+
+    skip = Extractor.skip
 
     def __init__(self, match):
         DeviantartExtractor.__init__(self, match)
@@ -379,6 +421,8 @@ class DeviantartStashExtractor(DeviantartExtractor):
         }),
     )
 
+    skip = Extractor.skip
+
     def __init__(self, match):
         DeviantartExtractor.__init__(self, match)
         self.stash_id = match.group(1)
@@ -405,6 +449,10 @@ class DeviantartFavoriteExtractor(DeviantartExtractor):
     archive_fmt = "f_{username}_{index}.{extension}"
     pattern = BASE_PATTERN + r"/favourites/?(?:\?catpath=/)?$"
     test = (
+        ("https://www.deviantart.com/h3813067/favourites/", {
+            "options": (("metadata", True), ("flat", False)),  # issue #271
+            "count": 1,
+        }),
         ("https://www.deviantart.com/h3813067/favourites/", {
             "content": "6a7c74dc823ebbd457bdd9b3c2838a6ee728091e",
         }),
@@ -597,6 +645,7 @@ class DeviantartAPI():
         if not isinstance(self.mature, str):
             self.mature = "true" if self.mature else "false"
         self.metadata = extractor.config("metadata", False)
+        self.folders = extractor.config("folders", False)
 
         self.refresh_token = extractor.config("refresh-token")
         self.client_id = extractor.config("client-id", self.CLIENT_ID)
@@ -632,13 +681,17 @@ class DeviantartAPI():
         endpoint = "collections/folders"
         params = {"username": username, "offset": offset, "limit": 50,
                   "mature_content": self.mature}
-        return self._pagination_list(endpoint, params)
+        return self._pagination_folders(endpoint, params)
 
     def deviation(self, deviation_id):
         """Query and return info about a single Deviation"""
         endpoint = "deviation/" + deviation_id
         deviation = self._call(endpoint)
-        return self._extend((deviation,))[0]
+        if self.metadata:
+            self._metadata((deviation,))
+        if self.folders:
+            self._folders((deviation,))
+        return deviation
 
     def deviation_content(self, deviation_id):
         """Get extended content of a single Deviation"""
@@ -661,12 +714,12 @@ class DeviantartAPI():
         params = {"mature_content": self.mature}
         return self._call(endpoint, params)["metadata"]
 
-    def gallery(self, username, folder_id="", offset=0):
+    def gallery(self, username, folder_id="", offset=0, extend=True):
         """Yield all Deviation-objects contained in a gallery folder"""
         endpoint = "gallery/" + folder_id
         params = {"username": username, "offset": offset, "limit": 24,
                   "mature_content": self.mature, "mode": "newest"}
-        return self._pagination(endpoint, params)
+        return self._pagination(endpoint, params, extend)
 
     def gallery_all(self, username, offset=0):
         """Yield all Deviation-objects of a specific user"""
@@ -681,7 +734,7 @@ class DeviantartAPI():
         endpoint = "gallery/folders"
         params = {"username": username, "offset": offset, "limit": 50,
                   "mature_content": self.mature}
-        return self._pagination_list(endpoint, params)
+        return self._pagination_folders(endpoint, params)
 
     @memcache(keyarg=1)
     def user_profile(self, username):
@@ -753,7 +806,7 @@ class DeviantartAPI():
                 self.log.error(msg)
                 return data
 
-    def _pagination(self, endpoint, params):
+    def _pagination(self, endpoint, params, extend=True):
         public = True
         while True:
             data = self._call(endpoint, params, public=public)
@@ -765,24 +818,58 @@ class DeviantartAPI():
                 self.log.debug("Switching to private access token")
                 public = False
                 continue
-            yield from self._extend(data["results"])
+
+            if extend:
+                if self.metadata:
+                    self._metadata(data["results"])
+                if self.folders:
+                    self._folders(data["results"])
+            yield from data["results"]
+
             if not data["has_more"]:
                 return
             params["offset"] = data["next_offset"]
 
-    def _pagination_list(self, endpoint, params):
+    def _pagination_folders(self, endpoint, params):
         result = []
-        result.extend(self._pagination(endpoint, params))
+        result.extend(self._pagination(endpoint, params, False))
         return result
 
-    def _extend(self, deviations):
-        """Add extended metadata to a list of deviation objects"""
-        if self.metadata:
-            for deviation, metadata in zip(
-                    deviations, self.deviation_metadata(deviations)):
-                deviation.update(metadata)
-                deviation["tags"] = [t["tag_name"] for t in deviation["tags"]]
+    def _metadata(self, deviations):
+        """Add extended metadata to each deviation object"""
+        for deviation, metadata in zip(
+                deviations, self.deviation_metadata(deviations)):
+            deviation.update(metadata)
+            deviation["tags"] = [t["tag_name"] for t in deviation["tags"]]
         return deviations
+
+    def _folders(self, deviations):
+        """Add a list of all containing folders to each deviation object"""
+        for deviation in deviations:
+            deviation["folders"] = self._folders_map(
+                deviation["author"]["username"])[deviation["deviationid"]]
+
+    @memcache(keyarg=1)
+    def _folders_map(self, username):
+        """Generate a deviation_id -> folders mapping for 'username'"""
+        self.log.info("Collecting folder information for '%s'", username)
+        folders = self.gallery_folders(username)
+
+        # add parent names to folders, but ignore "Featured" as parent
+        fmap = {}
+        featured = folders[0]["folderid"]
+        for folder in folders:
+            if folder["parent"] and folder["parent"] != featured:
+                folder["name"] = fmap[folder["parent"]] + "/" + folder["name"]
+            fmap[folder["folderid"]] = folder["name"]
+
+        # map deviationids to folder names
+        dmap = collections.defaultdict(list)
+        for folder in folders:
+            for deviation in self.gallery(
+                    username, folder["folderid"], 0, False):
+                dmap[deviation["deviationid"]].append(folder["name"])
+        return dmap
 
 
 @cache(maxage=10*365*24*3600, keyarg=0)

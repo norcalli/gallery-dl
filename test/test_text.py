@@ -161,7 +161,7 @@ class TestText(unittest.TestCase):
 
     def test_extract(self, f=text.extract):
         txt = "<a><b>"
-        self.assertEqual(f(txt, "<", ">"), ("a", 3))
+        self.assertEqual(f(txt, "<", ">"), ("a" , 3))
         self.assertEqual(f(txt, "X", ">"), (None, 0))
         self.assertEqual(f(txt, "<", "X"), (None, 0))
 
@@ -173,9 +173,27 @@ class TestText(unittest.TestCase):
 
         # invalid arguments
         for value in INVALID:
-            self.assertEqual(f(value   , "<"  , ">")  , (None, 0))
-            self.assertEqual(f(txt, value, ">")  , (None, 0))
-            self.assertEqual(f(txt, "<"  , value), (None, 0))
+            self.assertEqual(f(value, "<"  , ">")  , (None, 0))
+            self.assertEqual(f(txt  , value, ">")  , (None, 0))
+            self.assertEqual(f(txt  , "<"  , value), (None, 0))
+
+    def test_rextract(self, f=text.rextract):
+        txt = "<a><b>"
+        self.assertEqual(f(txt, "<", ">"), ("b" , 3))
+        self.assertEqual(f(txt, "X", ">"), (None, -1))
+        self.assertEqual(f(txt, "<", "X"), (None, -1))
+
+        # 'pos' argument
+        for i in range(10, 3, -1):
+            self.assertEqual(f(txt, "<", ">", i), ("b", 3))
+        for i in range(3, 0, -1):
+            self.assertEqual(f(txt, "<", ">", i), ("a", 0))
+
+        # invalid arguments
+        for value in INVALID:
+            self.assertEqual(f(value, "<"  , ">")  , (None, -1))
+            self.assertEqual(f(txt  , value, ">")  , (None, -1))
+            self.assertEqual(f(txt  , "<"  , value), (None, -1))
 
     def test_extract_all(self, f=text.extract_all):
         txt = "[c][b][a]: xyz! [d][e"
@@ -349,6 +367,30 @@ class TestText(unittest.TestCase):
         for value in INVALID_ALT:
             self.assertEqual(f(value), None)
             self.assertEqual(f(value, "foo"), "foo")
+
+    def test_parse_datetime(self, f=text.parse_datetime):
+        null = datetime.datetime.utcfromtimestamp(0)
+
+        self.assertEqual(f("1970-01-01T00:00:00+00:00"), null)
+        self.assertEqual(f("1970-01-01T00:00:00+0000") , null)
+        self.assertEqual(f("1970.01.01", "%Y.%m.%d")   , null)
+
+        self.assertEqual(
+            f("2019-05-07T21:25:02+09:00"),
+            datetime.datetime(2019, 5, 7, 12, 25, 2),
+        )
+        self.assertEqual(
+            f("2019-05-07T21:25:02+0900"),
+            datetime.datetime(2019, 5, 7, 12, 25, 2),
+        )
+        self.assertEqual(
+            f("2019-05-07 21:25:02"),
+            "2019-05-07 21:25:02",
+        )
+
+        for value in INVALID:
+            self.assertEqual(f(value), None)
+        self.assertEqual(f("1970.01.01"), "1970.01.01")
 
 
 if __name__ == '__main__':

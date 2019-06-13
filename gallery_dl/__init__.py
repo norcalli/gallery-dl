@@ -121,6 +121,8 @@ def main():
             config.load(args.cfgfiles, strict=True)
         if args.yamlfiles:
             config.load(args.yamlfiles, strict=True, fmt="yaml")
+        if args.postprocessors:
+            config.set(("postprocessors", ), args.postprocessors)
         for key, value in args.options:
             config.set(key, value)
 
@@ -202,14 +204,8 @@ def main():
             if args.list_urls:
                 jobtype = job.UrlJob
                 jobtype.maxdepth = args.list_urls
-            elif args.list_keywords:
-                jobtype = job.KeywordJob
-            elif args.list_data:
-                jobtype = job.DataJob
-            elif args.simulate:
-                jobtype = job.SimulationJob
             else:
-                jobtype = job.DownloadJob
+                jobtype = args.jobtype or job.DownloadJob
 
             urls = args.urls
             if args.inputfile:
