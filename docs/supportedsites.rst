@@ -46,7 +46,7 @@ ImageFap             https://imagefap.com/               Images from Users, Gall
 imgbox               https://imgbox.com/                 Galleries, individual Images
 imgth                https://imgth.com/                  Galleries
 imgur                https://imgur.com/                  Albums, individual Images
-Instagram            https://www.instagram.com/          Images from Users, individual Images, Tag-Searches
+Instagram            https://www.instagram.com/          Images from Users, individual Images, Tag-Searches Optional
 Jaimini's Box        https://jaiminisbox.com/reader/     Chapters, Manga
 Joyreactor           http://joyreactor.cc/               |joyreactor-C|
 Keenspot             http://www.keenspot.com/            Comics
@@ -70,6 +70,7 @@ Ngomik               http://ngomik.in/                   Chapters
 nhentai              https://nhentai.net/                Galleries, Search Results
 Niconico Seiga       https://seiga.nicovideo.jp/         Images from Users, individual Images               Required
 nijie                https://nijie.info/                 |nijie-C|                                          Required
+NSFWalbum.com        https://nsfwalbum.com/              Albums
 Nyafuu Archive       https://archive.nyafuu.org/         Threads
 Patreon              https://www.patreon.com/            Images from Users, Creators
 Pawoo                https://pawoo.net/                  Images from Users, Images from Statuses
@@ -95,7 +96,7 @@ Sen Manga            https://raw.senmanga.com/           Chapters
 Sense-Scans          http://sensescans.com/reader/       Chapters, Manga
 Sex.com              https://www.sex.com/                Boards, Pins, Search Results
 Simply Hentai        https://www.simply-hentai.com/      Galleries, individual Images, Videos
-SlickPic             https://www.slickpic.com//          Albums
+SlickPic             https://www.slickpic.com/           Images from Users, Albums
 SlideShare           https://www.slideshare.net/         Presentations
 SmugMug              https://www.smugmug.com/            |smugmug-C|                                        Optional (OAuth)
 The /b/ Archive      https://thebarchive.com/            Threads
@@ -120,6 +121,7 @@ Imxto                https://imx.to/                     individual Images
 Pixhost              https://pixhost.to/                 individual Images
 Postimg              https://postimages.org/             individual Images
 Turboimagehost       https://www.turboimagehost.com/     individual Images
+もえぴりあ                https://vanilla-rock.com/           Posts, Tag-Searches
 ==================== =================================== ================================================== ================
 
 .. |artstation-C| replace:: Images from Users, Albums, Artwork Listings, Challenges, individual Images, Likes, Search Results

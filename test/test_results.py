@@ -13,7 +13,7 @@ import re
 import json
 import hashlib
 import unittest
-from gallery_dl import extractor, job, config, exception
+from gallery_dl import extractor, util, job, config, exception
 
 
 # these don't work on Travis CI
@@ -27,9 +27,7 @@ TRAVIS_SKIP = {
 # temporary issues, etc.
 BROKEN = {
     "mangapark",
-    "mangoxo",
-    "ngomik",
-    "photobucket",
+    "pixnet",
 }
 
 
@@ -163,9 +161,14 @@ class ResultJob(job.DownloadJob):
         self.hash_keyword = hashlib.sha1()
         self.hash_archive = hashlib.sha1()
         self.hash_content = hashlib.sha1()
+
         if content:
-            self.fileobj = FakePathfmt(self.hash_content)
-            self.get_downloader("http")._check_extension = lambda a, b: None
+            self.fileobj = TestPathfmt(self.hash_content)
+            self.get_downloader("http").check_extension = lambda a, b: None
+
+        self.format_directory = TestFormatter(
+            "".join(self.extractor.directory_fmt))
+        self.format_filename = TestFormatter(self.extractor.filename_fmt)
 
     def run(self):
         for msg in self.extractor:
@@ -176,9 +179,11 @@ class ResultJob(job.DownloadJob):
         self.update_keyword(keywords)
         self.update_archive(keywords)
         self.update_content(url)
+        self.format_filename.format_map(keywords)
 
     def handle_directory(self, keywords):
         self.update_keyword(keywords, False)
+        self.format_directory.format_map(keywords)
 
     def handle_queue(self, url, keywords):
         self.queue = True
@@ -207,13 +212,13 @@ class ResultJob(job.DownloadJob):
             self.get_downloader(scheme).download(url, self.fileobj)
 
 
-class FakePathfmt():
-    """Minimal file-like interface"""
+class TestPathfmt():
 
     def __init__(self, hashobj):
         self.hashobj = hashobj
         self.path = ""
         self.size = 0
+        self.keywords = {}
         self.has_extension = True
 
     def __enter__(self):
@@ -238,6 +243,32 @@ class FakePathfmt():
         return 0
 
 
+class TestFormatter(util.Formatter):
+
+    @staticmethod
+    def _noop(_):
+        return ""
+
+    def _apply_simple(self, key, fmt):
+        if key == "extension" or "._format_optional." in repr(fmt):
+            return self._noop
+
+        def wrap(obj):
+            return fmt(obj[key])
+        return wrap
+
+    def _apply(self, key, funcs, fmt):
+        if key == "extension" or "._format_optional." in repr(fmt):
+            return self._noop
+
+        def wrap(obj):
+            obj = obj[key]
+            for func in funcs:
+                obj = func(obj)
+            return fmt(obj)
+        return wrap
+
+
 def setup_test_config():
     name = "gallerydl"
     email = "gallerydl@openaliasbox.org"
@@ -250,9 +281,10 @@ def setup_test_config():
     config.set(("extractor", "password"), name)
     config.set(("extractor", "nijie", "username"), email)
     config.set(("extractor", "seiga", "username"), email)
-    config.set(("extractor", "danbooru", "username"), None)
-    config.set(("extractor", "twitter" , "username"), None)
-    config.set(("extractor", "mangoxo" , "password"), "VZ8DL3983u")
+    config.set(("extractor", "danbooru" , "username"), None)
+    config.set(("extractor", "instagram", "username"), None)
+    config.set(("extractor", "twitter"  , "username"), None)
+    config.set(("extractor", "mangoxo"  , "password"), "VZ8DL3983u")
 
     config.set(("extractor", "deviantart", "client-id"), "7777")
     config.set(("extractor", "deviantart", "client-secret"),

@@ -2,6 +2,36 @@
 
 ## Unreleased
 
+## 1.8.7 - 2019-06-28
+### Additions
+- Support for
+  - `vanillarock` - https://vanilla-rock.com/ ([#254](https://github.com/mikf/gallery-dl/issues/254))
+  - `nsfwalbum`   - https://nsfwalbum.com/    ([#287](https://github.com/mikf/gallery-dl/issues/287))
+- `artist` and `tags` metadata for `hentaicafe` ([#238](https://github.com/mikf/gallery-dl/issues/238))
+- `description` metadata for `instagram` ([#310](https://github.com/mikf/gallery-dl/issues/310))
+- Format string option to replace a substring with another - `R<old>/<new>/` ([#318](https://github.com/mikf/gallery-dl/issues/318))
+### Changes
+- Delete empty archives created by the `zip` post-processor ([#316](https://github.com/mikf/gallery-dl/issues/316))
+### Fixes
+- Handle `hitomi` Game CG galleries correctly ([#321](https://github.com/mikf/gallery-dl/issues/321))
+- Miscellaneous fixes for `deviantart`, `hitomi`, `pururin`, `kissmanga`, `keenspot`, `mangoxo`, `imagefap`
+
+## 1.8.6 - 2019-06-14
+### Additions
+- Support for
+  - `slickpic` - https://www.slickpic.com/ ([#249](https://github.com/mikf/gallery-dl/issues/249))
+  - `xhamster` - https://xhamster.com/     ([#281](https://github.com/mikf/gallery-dl/issues/281))
+  - `pornhub`  - https://www.pornhub.com/  ([#282](https://github.com/mikf/gallery-dl/issues/282))
+  - `8muses`   - https://www.8muses.com/   ([#305](https://github.com/mikf/gallery-dl/issues/305))
+- `extra` option for `deviantart` to download Sta.sh content linked in description texts ([#302](https://github.com/mikf/gallery-dl/issues/302))
+### Changes
+- Detect `directlink` URLs with upper case filename extensions ([#296](https://github.com/mikf/gallery-dl/issues/296))
+### Fixes
+- Improved error handling for `tumblr` API calls ([#297](https://github.com/mikf/gallery-dl/issues/297))
+- Fixed extraction of `livedoor` blogs ([#301](https://github.com/mikf/gallery-dl/issues/301))
+- Fixed extraction of special `deviantart` Sta.sh items ([#307](https://github.com/mikf/gallery-dl/issues/307))
+- Fixed pagination for specific `keenspot` comics
+
 ## 1.8.5 - 2019-06-01
 ### Additions
 - Support for

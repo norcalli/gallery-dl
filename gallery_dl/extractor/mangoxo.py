@@ -11,6 +11,7 @@
 from .common import Extractor, Message
 from .. import text, exception
 from ..cache import cache
+import hashlib
 
 
 class MangoxoExtractor(Extractor):
@@ -37,7 +38,7 @@ class MangoxoExtractor(Extractor):
         page = self.request(self.root + "/login/").text
         token = text.extract(page, 'id="loginToken" value="', '"')[0]
         if not token:
-            self.log.warning("failed to extract 'loginToken'")
+            self.log.debug("failed to extract 'loginToken'")
 
         url = self.root + "/login/loginxmm"
         headers = {
@@ -46,7 +47,7 @@ class MangoxoExtractor(Extractor):
         }
         data = {
             "name": username,
-            "password": password,
+            "password": hashlib.md5(password.encode()).hexdigest(),
             "loginToken": token,
         }
         response = self.request(url, method="POST", headers=headers, data=data)

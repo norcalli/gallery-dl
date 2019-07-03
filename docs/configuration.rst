@@ -300,8 +300,9 @@ extractor.*.retries
 -------------------
 =========== =====
 Type        ``integer``
-Default     ``5``
-Description Number of times a failed HTTP request is retried before giving up.
+Default     ``4``
+Description Maximum number of times a failed HTTP request is retried before
+            giving up or ``-1`` for infinite retries.
 =========== =====
 
 
@@ -379,6 +380,28 @@ Description Like `image-filter`__, but applies to delegated URLs
 =========== =====
 
 __ `extractor.*.image-filter`_
+
+
+extractor.*.image-unique
+------------------------
+=========== =====
+Type        ``bool``
+Default     ``false``
+Description Ignore image URLs that have been encountered before during the
+            current extractor run.
+=========== =====
+
+
+extractor.*.chapter-unique
+--------------------------
+=========== =====
+Type        ``bool``
+Default     ``false``
+Description Like `image-unique`__, but applies to delegated URLs
+            like manga-chapters, etc.
+=========== =====
+
+__ `extractor.*.image-unique`_
 
 
 
@@ -945,6 +968,16 @@ Description Enable/Disable this downloader module.
 =========== =====
 
 
+downloader.*.mtime
+------------------
+=========== =====
+Type        ``bool``
+Default     ``true``
+Description Use |Last-Modified|_ HTTP response headers
+            to set file modification times.
+=========== =====
+
+
 downloader.*.part
 -----------------
 =========== =====
@@ -992,7 +1025,8 @@ downloader.*.retries
 =========== =====
 Type        ``integer``
 Default     `extractor.*.retries`_
-Description Number of retries during file downloads.
+Description Maximum number of retries during file downloads
+            or ``-1`` for infinite retries.
 =========== =====
 
 
@@ -1508,7 +1542,7 @@ Logging Configuration
 =========== =====
 Type        ``object``
 
-Example     .. code::
+Examples    .. code::
 
                 {
                     "format": "{asctime} {name}: {message}",
@@ -1517,10 +1551,21 @@ Example     .. code::
                     "encoding": "ascii"
                 }
 
+                {
+                    "level": "debug",
+                    "format": {
+                        "debug"  : "debug: {message}",
+                        "info"   : "[{name}] {message}",
+                        "warning": "Warning: {message}",
+                        "error"  : "ERROR: {message}"
+                    }
+                }
+
 Description Extended logging output configuration.
 
             * format
-                * Format string for logging messages
+                * General format string for logging messages
+                  or a dictionary with format strings for each loglevel.
 
                   In addition to the default
                   `LogRecord attributes <https://docs.python.org/3/library/logging.html#logrecord-attributes>`__,
@@ -1589,6 +1634,7 @@ Description An object with the ``name`` of a post-processor and its options.
 .. |webbrowser.open()| replace:: ``webbrowser.open()``
 .. |datetime.max| replace:: ``datetime.max``
 .. |Path| replace:: ``Path``
+.. |Last-Modified| replace:: ``Last-Modified``
 .. |Logging Configuration| replace:: ``Logging Configuration``
 .. |Postprocessor Configuration| replace:: ``Postprocessor Configuration``
 .. |strptime| replace:: strftime() and strptime() Behavior
@@ -1604,6 +1650,7 @@ Description An object with the ``name`` of a post-processor and its options.
 .. _requests.request(): https://docs.python-requests.org/en/master/api/#requests.request
 .. _timeout:           https://docs.python-requests.org/en/latest/user/advanced/#timeouts
 .. _verify:            https://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification
+.. _Last-Modified:     https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29
 .. _`Requests' proxy documentation`: http://docs.python-requests.org/en/master/user/advanced/#proxies
 .. _format string:     https://docs.python.org/3/library/string.html#formatstrings
 .. _format strings:    https://docs.python.org/3/library/string.html#formatstrings

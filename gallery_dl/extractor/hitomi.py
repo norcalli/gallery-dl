@@ -16,11 +16,12 @@ import string
 class HitomiGalleryExtractor(GalleryExtractor):
     """Extractor for image galleries from hitomi.la"""
     category = "hitomi"
+    root = "https://hitomi.la"
     pattern = r"(?:https?://)?hitomi\.la/(?:galleries|reader)/(\d+)"
     test = (
         ("https://hitomi.la/galleries/867789.html", {
             "url": "cb759868d090fe0e2655c3e29ebf146054322b6d",
-            "keyword": "07536afc5696cb4983a4831ab4c70c1d155f875c",
+            "keyword": "067b5d9b9c0f98530cd5dd2444e0f5a5b4b00d38",
         }),
         ("https://hitomi.la/galleries/1036181.html", {
             # "aa" subdomain for gallery-id ending in 1 (#142)
@@ -31,12 +32,17 @@ class HitomiGalleryExtractor(GalleryExtractor):
             "range": "1",
             "content": "b3ca8c6c8cc5826cf8b4ceb7252943abad7b8b4c",
         }),
+        ("https://hitomi.la/galleries/733697.html", {
+            # Game CG with scenes (#321)
+            "url": "c2a84185f467450b8b9b72fbe40c0649029ce007",
+            "count": 210,
+        }),
         ("https://hitomi.la/reader/867789.html"),
     )
 
     def __init__(self, match):
         self.gallery_id = text.parse_int(match.group(1))
-        url = "https://hitomi.la/galleries/{}.html".format(self.gallery_id)
+        url = "{}/galleries/{}.html".format(self.root, self.gallery_id)
         GalleryExtractor.__init__(self, match, url)
 
     def metadata(self, page):
@@ -51,9 +57,9 @@ class HitomiGalleryExtractor(GalleryExtractor):
             "parody"    : self._prep(extr('<td>Series</td><td>', '</td>')),
             "characters": self._prep(extr('<td>Characters</td><td>', '</td>')),
             "tags"      : self._prep(extr('<td>Tags</td><td>', '</td>')),
-            "date"      : extr('<span class="date">', '</span>'),
+            "date"      : self._date(extr('<span class="date">', '</span>')),
         }
-        if data["language"] == "N/A":
+        if data["language"] == "N/a":
             data["language"] = None
         data["lang"] = util.language_to_code(data["language"])
         return data
@@ -67,11 +73,18 @@ class HitomiGalleryExtractor(GalleryExtractor):
         # set Referer header before image downloads (#239)
         self.session.headers["Referer"] = self.chapter_url
 
+        # handle Game CG galleries with scenes (#321)
+        scenes = text.extract(page, "var scene_indexes = [", "]")[0]
+        if scenes and scenes.strip():
+            url = "{}/reader/{}.html".format(self.root, self.gallery_id)
+            page = self.request(url).text
+            begin, end = ">//g.hitomi.la/galleries/", "</div>"
+        else:
+            begin, end = "'//tn.hitomi.la/smalltn/", ".jpg',"
+
         return [
             (base + urlpart, None)
-            for urlpart in text.extract_iter(
-                page, "'//tn.hitomi.la/smalltn/", ".jpg',"
-            )
+            for urlpart in text.extract_iter(page, begin, end)
         ]
 
     @staticmethod
@@ -84,3 +97,7 @@ class HitomiGalleryExtractor(GalleryExtractor):
     @staticmethod
     def _prep_1(value):
         return text.remove_html(value).capitalize()
+
+    @staticmethod
+    def _date(value):
+        return text.parse_datetime(value + ":00", "%Y-%m-%d %H:%M:%S%z")

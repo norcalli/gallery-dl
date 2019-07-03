@@ -11,6 +11,7 @@
 import argparse
 import logging
 import json
+import sys
 from . import job, version
 
 
@@ -23,6 +24,14 @@ class ConfigAction(argparse.Action):
 class ConfigConstAction(argparse.Action):
     """Set argparse const values as config values"""
     def __call__(self, parser, namespace, values, option_string=None):
+        namespace.options.append(((self.dest,), self.const))
+
+
+class DeprecatedConfigConstAction(argparse.Action):
+    """Set argparse const values as config values + deprecation warning"""
+    def __call__(self, parser, namespace, values, option_string=None):
+        print("warning: {} is deprecated. Use {} instead.".format(
+            "/".join(self.option_strings), self.choices), file=sys.stderr)
         namespace.options.append(((self.dest,), self.const))
 
 
@@ -164,8 +173,16 @@ def build_parser():
     )
     downloader.add_argument(
         "-R", "--retries",
-        dest="retries", metavar="RETRIES", type=int, action=ConfigAction,
-        help="Number of retries (default: 5)",
+        dest="retries", metavar="N", type=int, action=ConfigAction,
+        help=("Maximum number of retries for failed HTTP requests "
+              "or -1 for infinite retries (default: 4)"),
+    )
+    downloader.add_argument(
+        "-A", "--abort",
+        dest="abort", metavar="N", type=int,
+        help=("Abort extractor run after N consecutive file downloads have "
+              "been skipped, e.g. if files with the same filename already "
+              "exist"),
     )
     downloader.add_argument(
         "--http-timeout",
@@ -183,15 +200,21 @@ def build_parser():
         help="Do not use .part files",
     )
     downloader.add_argument(
+        "--no-mtime",
+        dest="mtime", nargs=0, action=ConfigConstAction, const=False,
+        help=("Do not set file modification times according to "
+              "Last-Modified HTTP response headers")
+    )
+    downloader.add_argument(
         "--no-check-certificate",
         dest="verify", nargs=0, action=ConfigConstAction, const=False,
         help="Disable HTTPS certificate validation",
     )
     downloader.add_argument(
         "--abort-on-skip",
-        dest="skip", nargs=0, action=ConfigConstAction, const="abort",
-        help=("Abort extractor run if a file download would normally be "
-              "skipped, i.e. if a file with the same filename already exists"),
+        action=DeprecatedConfigConstAction,
+        dest="skip", nargs=0, const="abort", choices="-A/--abort",
+        help=argparse.SUPPRESS,
     )
 
     configuration = parser.add_argument_group("Configuration Options")
